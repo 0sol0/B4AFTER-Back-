@@ -13,6 +13,7 @@ class Book(models.Model):
     img_url = models.CharField(max_length=1000, null=True)
     description = models.TextField(null=True)
     isbn13 = models.CharField(max_length=13, null=True)
+    category = models.CharField(max_length=5, null=True)
     
     def __str__(self):
         return self.title
