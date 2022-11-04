@@ -5,6 +5,7 @@ class Book(models.Model):
     class Meta:
         db_table = "book"
         
+    #csv파일 DB전송시 중복된 도서가 올라가지 않도록 title을 primary키로 지정
     title = models.CharField(max_length=1200, primary_key=True)
     author = models.CharField(max_length=1000, null=True)
     publisher = models.CharField(max_length=1000, null=True)

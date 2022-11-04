@@ -14,7 +14,7 @@ django.setup()
 from books.models import Book
 
 #읽어들일 csv 디렉토리를 각 변수에 담는다.
-CSV_PATH = r"C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\test.csv"
+CSV_PATH = r"C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\DB.csv"
 
 #함수 정의하기 (row부분엔 해당 table의 row명을 적어준다.)
 def insert_Book():
@@ -22,7 +22,7 @@ def insert_Book():
         data_reader = csv.reader(csv_file)
         next(data_reader, None)
         for book in data_reader:
-            if book[3]:
+            if book:
                 title = book[3]
                 author = book[4]
                 publisher = book[5]
@@ -35,17 +35,11 @@ def insert_Book():
                 # li = [title, author, publisher, pub_date, img_url, description, isbn13]
                 # print(li)
 
+                # 중복방지용 try/except 구문
                 try:
                     Book.objects.create(title = title, author = author, publisher = publisher, pub_date = pub_date, img_url = img_url, description = description, isbn13 = isbn13)
                 except:
                     continue
-                
-                # 중복방지용 코드작성중(미완성)
-                # exist_title = Book.objects.filter(title=title)
-                # if exist_title:
-                #     return
-                # else:
-                #     Book.objects.create(title = title, author = author, publisher = publisher, pub_date = pub_date, img_url = img_url, description = description, isbn13 = isbn13)
                 
     # DB 업데이트 완료시 메시지 출력
     print('PRODUCT DATA UPLOADED SUCCESSFULY!')
