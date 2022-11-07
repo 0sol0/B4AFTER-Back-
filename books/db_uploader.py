@@ -1,4 +1,3 @@
-#임포트
 import os
 import sys
 import csv
@@ -16,32 +15,6 @@ from books.models import Book
 #읽어들일 csv 디렉토리를 각 변수에 담는다.
 CSV_PATH = r"C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\test_books.csv"
 
-# 카테고리 분류해주는 함수(데이터셋 변경으로 인해 사용X)
-# def categories(n):
-#     if n == '0':
-#         c = '총류'
-#     elif n == '1':
-#         c = '철학, 심리학, 윤리학'
-#     elif n == '2':
-#         c = '종교'
-#     elif n == '3':
-#         c = '사회 과학'
-#     elif n == '4':
-#         c = '자연 과학'
-#     elif n == '5':
-#         c = '기술 과학'
-#     elif n == '6':
-#         c = '예술'
-#     elif n == '7':
-#         c = '언어'
-#     elif n == '8':
-#         c = '문학'
-#     elif n == '9':
-#         c = '역사, 지리, 관광'
-#     else:
-#         c = '기타'
-
-#     return c
 
 #함수 정의하기 (row부분엔 해당 table의 row명을 적어준다.)
 def insert_Book():
@@ -69,7 +42,7 @@ def insert_Book():
                 except:
                     continue
                 
-    # DB 업데이트 완료시 메시지 출력
-    print('PRODUCT DATA UPLOADED SUCCESSFULY!')
+#     # DB 업데이트 완료시 메시지 출력
+#     print('PRODUCT DATA UPLOADED SUCCESSFULY!')
     
 insert_Book()
