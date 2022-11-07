@@ -5,12 +5,24 @@ from rest_framework.response import Response
 from django.db.models.query_utils import Q
 
 from books.models import Book, Review
-from books.serializer import ReviewSerializer, ReviewCreateSerializer, BookSerializer
+from books.serializer import ReviewSerializer, ReviewCreateSerializer, BookSerializer, BookListSerializer
+
+
+class BookListView(APIView):
+    def get(self, request, **kwargs):
+        category = request.GET.get('category')
+
+        if category == None:
+            query_set = Book.objects.all()
+        else:
+            query_set = Book.objects.filter(Q(category__contains=category))
+        book_serializer = BookListSerializer(query_set, many=True)
+        return Response(book_serializer.data)
 
 
 class Book_Detail(APIView):
     def get(self, request, book_id):
-        book = Book.objects.get(id=book_id)
+        book = get_object_or_404(Book, id=book_id)
         serializer = BookSerializer(book)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -18,7 +30,7 @@ class Book_Detail(APIView):
 class Book_Review(APIView):
     def get(self, request, book_id):
         book = Book.objects.get(id=book_id)
-        reviews = book.comment_set.all()
+        reviews = book.reviews.all()
         serializer = ReviewSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -51,3 +63,5 @@ class Book_Review_Detail(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+
+
