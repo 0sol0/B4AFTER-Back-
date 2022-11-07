@@ -1,10 +1,11 @@
 import pandas as pd
-
+from books.models import Review
 
 book_sense = pd.read_csv('sense.csv')
 
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 300)
+
 
 sentence = "모처럼 책을 읽고 따뜻했습니다. 아버지는 산에서 내려와 민중을 위한 사회주의를 완성했습니다. 그 아버지의 따뜻함을 받은 사람들의 마음을 통해 딸과 아버지는 화해를 이루게 되고 암데나 뿌레라는 아버지의 말처럼 이제 암데나 뿌려진 아버지의 정신을 느끼며 살아가겠지요. 전라도 사투리가 이렇게 구수한지 정말 재미있습니다."
 

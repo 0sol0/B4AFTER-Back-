@@ -32,3 +32,5 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.content)
+
+
