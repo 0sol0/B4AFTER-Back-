@@ -19,7 +19,7 @@ class Book(models.Model):
     favorites = models.ManyToManyField(User, related_name="favorites")
 
     def __str__(self):
-        return self.title
+        return self.book_title
 
 
 
@@ -34,3 +34,7 @@ class Review(models.Model):
 
     def __str__(self):
         return str(self.content)
+
+class Image(models.Model):
+    top_ten = models.ImageField(null=True, upload_to="static")
+    # rec_books = models.ImageField(null=True)
