@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-book_sense = pd.read_csv('sense.csv')
+book_sense = pd.read_csv(r'C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\sense.csv')
 
 pd.set_option('display.max_columns', 10)
 pd.set_option('display.width', 300)

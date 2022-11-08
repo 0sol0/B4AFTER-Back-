@@ -15,8 +15,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from nltk.corpus import stopwords
-nltk.download("stopwords")
-nltk.download("punkt")
+nltk.download("stopwords", quiet=True)
+nltk.download("punkt", quiet=True)
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -39,25 +39,21 @@ rc('font', family=font_name)
 
 # %%
 # csv파일 불러오기
-books = pd.read_csv(r'C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\proc_books.csv')
-books.head(3)
+def load_csv():
+    books = pd.read_csv(r'C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\proc_books.csv')
 
-# %%
-"""
-# 프로세싱
-"""
+    # csv파일 프로세싱
+    df = books.copy()
+    df.dropna(inplace=True)
+    df.reset_index(drop=True, inplace=True)
 
-# %%
-# csv파일 프로세싱
-df = books.copy()
-df.dropna(inplace=True)
-df.reset_index(drop=True, inplace=True)
+    df.drop(columns = ['year_of_publication'],axis=1,inplace = True) #필요 없는 항목 제거
 
-df.drop(columns = ['year_of_publication'],axis=1,inplace = True) #필요 없는 항목 제거
+    df['Category'] = df['Category'].apply(lambda x: re.sub('[\W_]+',' ',x).strip())
 
-df['Category'] = df['Category'].apply(lambda x: re.sub('[\W_]+',' ',x).strip())
+    df.head(2)
 
-df.head(2)
+    return df
 
 # %%
 """
@@ -88,18 +84,30 @@ def popular_books(df,n=100):
     popularBooks=popularBooks.sort_values(by="Popularity",ascending=False)
     return popularBooks[["book_title","NumberOfVotes","AverageRatings","Popularity"]].reset_index(drop=True).head(n)
 
-# %%
-n=10
-top_ten=pd.DataFrame(popular_books(df,10))
-fig,ax=plt.subplots(1,10,figsize=(17,5), facecolor=("#101322"))
-fig.suptitle("인기 도서 TOP 10",fontsize=40,color="white")
-for i in range(len(top_ten["book_title"].tolist())):
-    url=df.loc[df["book_title"]==top_ten["book_title"].tolist()[i],"img_l"][:1].values[0]
-    img=Image.open(requests.get(url,stream=True).raw)
-    ax[i].imshow(img)
-    ax[i].axis("off")
-    ax[i].set_title("평점: {} ".format(round(df[df["book_title"]==top_ten["book_title"].tolist()[i]]["rating"].mean(),1)),y=-0.20,color="white",fontsize=10)
-    fig.show()
+def view_top_ten(df, pop):
+    n=10
+    top_ten=pd.DataFrame(popular_books(df,10))
+    fig,ax=plt.subplots(1,10,figsize=(17,5), facecolor=("#101322"))
+    fig.suptitle("인기 도서 TOP 10",fontsize=40,color="white")
+    for i in range(len(top_ten["book_title"].tolist())):
+        url=df.loc[df["book_title"]==top_ten["book_title"].tolist()[i],"img_l"][:1].values[0]
+        img=Image.open(requests.get(url,stream=True).raw)
+        ax[i].imshow(img)
+        ax[i].axis("off")
+        ax[i].set_title("평점: {} ".format(round(df[df["book_title"]==top_ten["book_title"].tolist()[i]]["rating"].mean(),1)),y=-0.20,color="white",fontsize=10)
+        # fig.show()
+    return top_ten
+
+
+
+def get_top_ten_image():
+    csv = load_csv()
+    pop_books = popular_books(csv)
+    result = view_top_ten(csv, pop_books)
+
+    plt.savefig(r'books\static\most_10_book.png')
+
+    return result
 
 # %%
 """
@@ -166,14 +174,14 @@ def item_based_recommender(book_title):
     else:
         print('해당 도서에 대한 정보를 찾을 수 없습니다!')
 
-# %%
-item_based_recommender('Fahrenheit 451')
+# # %%
+# item_based_recommender('Fahrenheit 451')
 
-# %%
-item_based_recommender('The Street Lawyer')
+# # %%
+# item_based_recommender('The Street Lawyer')
 
-# %%
-item_based_recommender('Divine Secrets of the Ya-Ya Sisterhood: A Novel')
+# # %%
+# item_based_recommender('Divine Secrets of the Ya-Ya Sisterhood: A Novel')
 
 # %%
 """
@@ -239,14 +247,14 @@ def content_based_recommender(book_title):
         
         print('Cant find book in dataset, please check spelling')
 
-# %%
-content_based_recommender('The Testament')
+# # %%
+# content_based_recommender('The Testament')
 
-# %%
-content_based_recommender('1st to Die: A Novel')
+# # %%
+# content_based_recommender('1st to Die: A Novel')
 
-# %%
-content_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
+# # %%
+# content_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
 
 # %%
 """
@@ -314,14 +322,14 @@ def content_based_recommender2(book_title):
         
         print('Cant find book in dataset, please check spelling')
 
-# %%
-content_based_recommender2('To Kill a Mockingbird')
+# # %%
+# content_based_recommender2('To Kill a Mockingbird')
 
-# %%
-content_based_recommender2('A Walk to Remember')
+# # %%
+# content_based_recommender2('A Walk to Remember')
 
-# %%
-content_based_recommender2('A Painted House')
+# # %%
+# content_based_recommender2('A Painted House')
 
 # %%
 """
@@ -330,6 +338,17 @@ content_based_recommender2('A Painted House')
 
 # %%
 def custom_recommender(book_title):
+
+    books = pd.read_csv(r'C:\Users\gudql\Desktop\B4AFTER\B4AFTER-Back-\books\csv\proc_books.csv')
+
+    # csv파일 프로세싱
+    df = books.copy()
+    df.dropna(inplace=True)
+    df.reset_index(drop=True, inplace=True)
+
+    df.drop(columns = ['year_of_publication'],axis=1,inplace = True) #필요 없는 항목 제거
+
+    df['Category'] = df['Category'].apply(lambda x: re.sub('[\W_]+',' ',x).strip())
     
     #ITEM-BASED
     book_title = str(book_title)
@@ -460,37 +479,38 @@ def custom_recommender(book_title):
                              y=-0.18,
                                  color="white",
                                  fontsize=18)
-                fig.show()    
                 
+                plt.savefig(r'books\static\recommended_books')
+
             return recommended_books
 
     else:
         return('도서 목록에 없는 책이에요! 다른 책을 알아봐주세요')
 
-# %%
-custom_recommender('The Summons')
+# # %%
+# custom_recommender('The Summons')
 
-# %%
-custom_recommender('Snow Falling on Cedars')
+# # %%
+# custom_recommender('Snow Falling on Cedars')
 
-# %%
-custom_recommender("Tuesdays with Morrie: An Old Man, a Young Man, and Life's Greatest Lesson")
+# # %%
+# custom_recommender("Tuesdays with Morrie: An Old Man, a Young Man, and Life's Greatest Lesson")
 
 # %%
 """
 #### 모든 추천 방식 비교
 """
 
-# %%
-item_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
+# # %%
+# item_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
 
-# %%
-content_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
+# # %%
+# content_based_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
 
-# %%
-content_based_recommender2('Harry Potter and the Order of the Phoenix (Book 5)')
+# # %%
+# content_based_recommender2('Harry Potter and the Order of the Phoenix (Book 5)')
 
-# %%
-custom_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
+# # %%
+# custom_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
 
 # %%

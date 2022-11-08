@@ -2,10 +2,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from django.http import HttpResponse
 from django.db.models.query_utils import Q
 
-from books.models import Book, Review
-from books.serializer import ReviewSerializer, ReviewCreateSerializer, BookSerializer, BookListSerializer
+from books.book_recommend import *
+from books.models import Book, Review, Image
+from books.serializer import ReviewSerializer, ReviewCreateSerializer, BookSerializer, BookListSerializer, ImageSerializer
 
 
 class BookListView(APIView):
@@ -19,6 +21,18 @@ class BookListView(APIView):
         book_serializer = BookListSerializer(query_set, many=True)
         return Response(book_serializer.data)
 
+class Books_Home(APIView):
+    def get(self, request):
+        result = get_top_ten_image()
+        top_ten_list = result["book_title"].tolist()
+        print(top_ten_list)
+        
+        image = Image()
+        image.top_ten = r'books\static\most_10_book.png'
+        image.save()
+        image_serializer = ImageSerializer(image)
+
+        return Response(image_serializer.data)
 
 class Book_Detail(APIView):
     def get(self, request, book_id):
