@@ -139,8 +139,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-csv/
-static/
 
 # Spyder project settings
 .spyderproject
