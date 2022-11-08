@@ -38,4 +38,4 @@ class Review(models.Model):
 
 class Image(models.Model):
     top_ten = models.ImageField(null=True, upload_to="static")
-    # rec_books = models.ImageField(null=True)
+    rec_books = models.ImageField(null=True, upload_to="static")

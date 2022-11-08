@@ -18,13 +18,20 @@ class Book_List(APIView):
 # 홈 페이지
 class Books_Home(APIView):
     def get(self, request):
-        result = get_top_ten_image()
-        top_ten_list = result["book_title"].tolist()
+        gtt = get_top_ten_image()
+        top_ten_list = gtt["book_title"].tolist()
         print(top_ten_list)
         
         image = Image()
         image.top_ten = r'books\static\most_10_book.png'
+
+        # favorite= Favorite()
+        # interest_book = favorite.title
+        cus_rec = custom_recommender('Harry Potter and the Order of the Phoenix (Book 5)')
+        print(cus_rec)
+        image.rec_books = r'books\static\recommended_books.png'
         image.save()
+
         image_serializer = ImageSerializer(image)
 
         return Response(image_serializer.data)
