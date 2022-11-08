@@ -15,18 +15,6 @@ class Book_List(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# class BookListView(APIView):
-#     def get(self, request, **kwargs):
-#         category = request.GET.get('category')
-
-#         if category == None:
-#             query_set = Book.objects.all()
-#         else:
-#             query_set = Book.objects.filter(Q(category__contains=category))
-#         book_serializer = BookSerializer(query_set, many=True)
-#         return Response(book_serializer.data)
-
-
 class Book_Detail(APIView):
     def get(self, request, isbn):
         book = get_object_or_404(Book, isbn=isbn)
@@ -79,17 +67,12 @@ class Review_List(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
-
-
-
-# class Books_Home(APIView):
-#     def get(self, request):
-#         get_top_ten_image()
-#         image = Image()
-#         image.top_ten = r'B4AFTER-Back-\books\static\most 10 book.png'
-#         image.save()
-#         image_serializer = ImageSerializer(image)
-
-#         return Response(image_serializer.data)
+class Book_Like(APIView):
+    def post(self, request, isbn):
+        book = get_object_or_404(Book, isbn=isbn)
+        if request.user in book.likes.all():
+            book.likes.remove(request.user)
+            return Response("좋아요 했습니다.", status=status.HTTP_200_OK)
+        else:
+            book.likes.add(request.user)
+            return Response("좋아요 취소 했습니다.", status=status.HTTP_200_OK)

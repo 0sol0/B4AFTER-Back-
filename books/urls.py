@@ -9,6 +9,5 @@ urlpatterns = [
     path('<str:isbn>/', views.Book_Detail.as_view(), name='bookdetail'),
     path('<str:book_id>/review/', views.Book_Review.as_view(), name='bookreview'),
     path('<str:book_id>/review/<int:review_id>/', views.Book_Review_Detail.as_view(), name='book_review_detail'),
-    # path('<int:book_id>/', views.Book_Interest.as_view(), name='book_interest'),
-    # path('<int:book_id>/', views.Book_Life.as_view(), name='book_life'),
+    path('<int:book_id>/like/', views.Book_Like.as_view(), name='like_view'),
 ]
