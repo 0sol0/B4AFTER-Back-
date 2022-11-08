@@ -78,3 +78,15 @@ class Book_Review_Detail(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
+
+
+class FavoritView(APIView):
+    def post(self, request, isbn):
+        books = get_object_or_404(Book, isbn=isbn)
+        if request.user in books.favorites.all():
+            books.favorites.remove(request.user)
+            return Response('관심 목록에서 삭제했습니다', status=status.HTTP_200_OK)
+        else:
+            books.favorites.add(request.user)
+            return Response('관심 목록에 추가 했습니다', status=status.HTTP_200_OK)
+        

@@ -14,6 +14,8 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
 class BookSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
+    favorites = serializers.StringRelatedField(many=True)
+    
 
     class Meta:
         model = Book
