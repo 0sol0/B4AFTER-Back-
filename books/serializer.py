@@ -14,8 +14,15 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         fields = ("content",)
 
 
+class ReviewListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+
 class BookSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
+    likes = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Book

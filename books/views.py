@@ -1,27 +1,18 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from django.db.models.query_utils import Q
 
-from books.book_recommend import *
-from books.models import Book, Review, Image
-from books.serializer import ReviewSerializer, ReviewCreateSerializer, BookSerializer, BookListSerializer, ImageSerializer
+from books.models import Book, Review
+from books.serializer import ReviewSerializer, ReviewCreateSerializer, ReviewListSerializer, BookSerializer, BookListSerializer
 
 
-
-# 전체 보기(List)
-class BookListView(APIView):
-    def get(self, request, **kwargs):
-        category = request.GET.get('category')
-
-        if category == None:
-            query_set = Book.objects.all()
-        else:
-            query_set = Book.objects.filter(Q(category__contains=category))
-        book_serializer = BookListSerializer(query_set, many=True)
-        return Response(book_serializer.data)
-
-
+class Book_List(APIView):
+    def get(self, request):
+        books = Book.objects.all()
+        serializer = BookListSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # 홈 페이지
@@ -56,8 +47,8 @@ class BookSearchView(APIView):
 
 # 상세 보기
 class Book_Detail(APIView):
-    def get(self, request, book_id):
-        book = get_object_or_404(Book, id=book_id)
+    def get(self, request, isbn):
+        book = get_object_or_404(Book, isbn=isbn)
         serializer = BookSerializer(book)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
@@ -101,22 +92,19 @@ class Book_Review_Detail(APIView):
             return Response("권한이 없습니다!", status=status.HTTP_403_FORBIDDEN)
 
 
+class Review_List(APIView):
+    def get(self, request):
+        reviews = Review.objects.all()
+        serializer = ReviewListSerializer(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-class FavoritView(APIView):
+
+class Book_Like(APIView):
     def post(self, request, isbn):
-        books = get_object_or_404(Book, isbn=isbn)
-        if request.user in books.favorites.all():
-            books.favorites.remove(request.user)
-            return Response('관심 목록에서 삭제했습니다', status=status.HTTP_200_OK)
+        book = get_object_or_404(Book, isbn=isbn)
+        if request.user in book.likes.all():
+            book.likes.remove(request.user)
+            return Response("관심 목록에서 삭제했습니다.", status=status.HTTP_200_OK)
         else:
-            books.favorites.add(request.user)
-            return Response('관심 목록에 추가 했습니다', status=status.HTTP_200_OK)
-        
-
-
-
-
-
-
-
-
+            book.likes.add(request.user)
+            return Response("관심 목록에 추가 했습니다.", status=status.HTTP_200_OK)
