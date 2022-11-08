@@ -7,6 +7,9 @@ from rest_framework_simplejwt.views import (
 )
 
 from users.serializers import CustomTokenObtainPairSerializer, UserSerializer
+from rest_framework.generics import get_object_or_404
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer,UserProfileSerializer #프로필 페이지
+from .models import User
 
 
 # Create your views here.
@@ -31,4 +34,10 @@ class mockView(APIView):
         user.is_admin = True
         user.save()
         return Response("get 요청")
+
+class ProfileView(APIView):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, id=user_id)
+        serializer = UserProfileSerializer
+        return Response(serializer.data)
 
