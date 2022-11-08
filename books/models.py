@@ -16,10 +16,13 @@ class Book(models.Model):
     img_l = models.CharField(max_length=1000, null=True)
     summary = models.CharField(max_length=13, null=True)
     category = models.CharField(max_length=100, null=True)
+    likes = models.ManyToManyField(User, related_name='like_books')
 
 
     def __str__(self):
         return self.book_title
+
+
 
 
 class Review(models.Model):
