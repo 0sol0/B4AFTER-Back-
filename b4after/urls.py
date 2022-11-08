@@ -7,4 +7,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include("users.urls")),
     path('books/', include("books.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
